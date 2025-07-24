@@ -1,0 +1,8 @@
+requests>=2.25.1
+beautifulsoup4>=4.9.3
+lxml>=4.6.3
+opencv-python>=4.5.0
+PyYAML>=5.4.0
+numpy>=1.19.0
+tqdm>=4.64.0
+pathlib2>=2.3.6 
