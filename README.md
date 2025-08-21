@@ -10,6 +10,7 @@ A high-performance Python scraper that downloads all Pokemon Trading Card Game i
 - 📈 **Pre-scan Analysis** - Counts total cards before downloading with detailed set statistics
 - 🛡️ **Robust Error Handling** - Retry logic, exponential backoff, and graceful failure recovery
 - 📁 **Organized Output** - Clean file naming and comprehensive metadata generation
+- 🗂️ **Flexible Organization** - Option to organize images by set folders for better dataset structure
 - ⚙️ **Flexible Configuration** - Multiple speed modes and customizable settings
 
 ## 🎯 Use Cases
@@ -22,10 +23,12 @@ A high-performance Python scraper that downloads all Pokemon Trading Card Game i
 ## 📦 Installation
 
 ### Prerequisites
+
 - Python 3.7+
 - Internet connection
 
 ### Setup
+
 ```bash
 # Clone the repository
 git clone https://github.com/EmorrowD/pokemon-card-scraper
@@ -38,12 +41,14 @@ pip install -r requirements.txt
 ## 🚀 Quick Start
 
 ### Basic Usage
+
 ```bash
 # Download all cards (recommended for first-time users)
 python pokemon_card_scraper.py --fast
 ```
 
 ### Advanced Usage
+
 ```bash
 # Maximum speed mode
 python pokemon_card_scraper.py --fast
@@ -54,6 +59,12 @@ python pokemon_card_scraper.py --delay 0.5
 # Parallel downloading with custom workers
 python pokemon_card_scraper.py --parallel --workers 10
 
+# Organize images by set folders
+python pokemon_card_scraper.py --organize-by-set
+
+# Combine set organization with fast mode
+python pokemon_card_scraper.py --fast --organize-by-set
+
 # Skip card counting (start downloading immediately)
 python pokemon_card_scraper.py --fast --skip-count
 ```
@@ -61,6 +72,7 @@ python pokemon_card_scraper.py --fast --skip-count
 ## 📊 Sample Output
 
 ### Scanning Phase
+
 ```
 🔢 Counting total cards across all sets...
 📊 Scanning sets: 100%|████████| 150/150 [02:30<00:00, 1.2set/s]
@@ -77,11 +89,13 @@ python pokemon_card_scraper.py --fast --skip-count
 ```
 
 ### Download Phase
+
 ```
 💾 Downloading cards: 45%|████▌    | 11,631/25,847 [15:23<18:45, 12.6card/s]
 ```
 
 ### Completion Summary
+
 ```
 🎉 SCRAPING COMPLETED!
    Expected: 25,847 cards
@@ -90,7 +104,9 @@ python pokemon_card_scraper.py --fast --skip-count
    Success Rate: 97.6%
 ```
 
-## 📁 Output Structure
+## 📊 Output Structure
+
+### Default Structure (Flat Organization)
 
 ```
 pokemon_cards/
@@ -104,10 +120,34 @@ pokemon_cards/
 │   └── download_summary.txt        # Download statistics
 ```
 
+### Organized by Set Structure (`--organize-by-set`)
+
+```
+pokemon_cards/
+├── images/                          # Organized by set folders
+│   ├── Scarlet_Violet_SVI/
+│   │   ├── Pikachu_SVI_001.jpg
+│   │   ├── Sprigatito_SVI_003.jpg
+│   │   └── ...
+│   ├── Paldea_Evolved_PAL/
+│   │   ├── Charizard_PAL_183.jpg
+│   │   ├── Gardevoir_PAL_086.jpg
+│   │   └── ...
+│   └── Base_Set_BS/
+│       ├── Charizard_BS_004.jpg
+│       └── ...
+├── metadata/
+│   ├── cards_metadata.json         # Complete card information
+│   ├── pokemon_classes.txt         # List of all Pokemon names
+│   └── download_summary.txt        # Download statistics
+```
+
 ### File Naming Convention
+
 Images are named using the format: `{Pokemon_Name}_{Set_Code}_{Card_Number}.jpg`
 
 Examples:
+
 - `Pikachu_SVI_001.jpg` - Pikachu from Scarlet & Violet set, card #001
 - `Charizard_ex_PAL_183.jpg` - Charizard ex from Paldea Evolved, card #183
 
@@ -120,6 +160,7 @@ Examples:
 | `--workers` | Number of parallel workers | 5 | `--workers 10` |
 | `--fast` | Fast mode preset (parallel + optimized settings) | False | `--fast` |
 | `--skip-count` | Skip initial card counting | False | `--skip-count` |
+| `--organize-by-set` | Organize images into set-specific folders | False | `--organize-by-set` |
 
 ### Speed Modes Comparison
 
@@ -132,6 +173,7 @@ Examples:
 ## 📊 Performance
 
 ### Estimated Download Times*
+
 - **~25,000 cards total**
 - **Conservative Mode**: ~8-12 hours
 - **Default Mode**: ~45-90 minutes
@@ -142,6 +184,7 @@ Examples:
 ## 🛡️ Error Handling
 
 The scraper includes robust error handling:
+
 - **Network Issues**: Automatic retry with exponential backoff
 - **Rate Limiting**: Respectful delays and parallel connection limits  
 - **Interrupted Downloads**: Resume from where you left off
@@ -151,7 +194,9 @@ The scraper includes robust error handling:
 ## 📋 Generated Metadata
 
 ### cards_metadata.json
+
 Complete information for each downloaded card:
+
 ```json
 {
   "total_cards": 25234,
@@ -170,7 +215,9 @@ Complete information for each downloaded card:
 ```
 
 ### pokemon_classes.txt
+
 Numbered list of all unique Pokemon (useful for ML training):
+
 ```
 0: Abra
 1: Absol
@@ -181,6 +228,7 @@ Numbered list of all unique Pokemon (useful for ML training):
 ## 🤖 Machine Learning Integration
 
 The scraper is optimized for ML workflows:
+
 - **Clean Naming**: Consistent file naming for easy programmatic access
 - **Metadata Rich**: Complete card information for dataset analysis
 - **Class Lists**: Pre-generated class mappings for model training
@@ -194,6 +242,7 @@ The scraper is optimized for ML workflows:
 - **Respectful Scraping**: Implements best practices for web scraping ethics
 
 ### Copyright Disclaimer
+
 Pokemon card images are copyrighted by The Pokémon Company, Nintendo, Game Freak, and Creatures. This tool is for educational and research purposes only. Users are responsible for ensuring their use complies with applicable copyright laws.
 
 ## 🛠️ Troubleshooting
@@ -201,28 +250,33 @@ Pokemon card images are copyrighted by The Pokémon Company, Nintendo, Game Frea
 ### Common Issues
 
 **"No set links found!"**
+
 - Check internet connection
 - Verify PkmnCards.com is accessible
 - Try running with `--delay 1` for slower requests
 
 **High failure rate**
+
 - Reduce parallel workers: `--workers 3`
 - Increase delay: `--delay 0.5`
 - Check available disk space
 
 **Script interrupted**
+
 - Run the same command again - it will resume automatically
 - Check `pokemon_cards/metadata/` for progress information
 
 ### Performance Optimization
 
 **For faster downloads:**
+
 - Use SSD storage
 - Stable, fast internet connection
 - Run during off-peak hours
 - Use `--fast` mode
 
 **For server-friendly scraping:**
+
 - Use `--delay 1` or higher
 - Avoid `--parallel` mode
 - Run during low-traffic periods
@@ -230,6 +284,7 @@ Pokemon card images are copyrighted by The Pokémon Company, Nintendo, Game Frea
 ## 📝 Requirements
 
 See `requirements.txt` for the complete list:
+
 - `requests>=2.25.1` - HTTP requests
 - `beautifulsoup4>=4.9.3` - HTML parsing
 - `tqdm>=4.64.0` - Progress bars
@@ -240,6 +295,7 @@ See `requirements.txt` for the complete list:
 Contributions are welcome! Please feel free to submit issues, feature requests, or pull requests.
 
 ### Development Setup
+
 ```bash
 git clone https://github.com/yourusername/pokemon-tcg-scraper.git
 cd pokemon-tcg-scraper
@@ -258,4 +314,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
-⭐ **Star this repo if you find it useful!** ⭐ 
+⭐ **Star this repo if you find it useful!** ⭐
