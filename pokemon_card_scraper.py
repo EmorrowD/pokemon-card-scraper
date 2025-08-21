@@ -22,9 +22,10 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 logger = logging.getLogger(__name__)
 
 class PokemonCardScraper:
-    def __init__(self, base_url="https://pkmncards.com/sets/", download_dir="pokemon_cards"):
+    def __init__(self, base_url="https://pkmncards.com/sets/", download_dir="pokemon_cards", organize_by_set=False):
         self.base_url = base_url
         self.download_dir = Path(download_dir)
+        self.organize_by_set = organize_by_set
         self.session = requests.Session()
         self.session.headers.update({
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
@@ -282,8 +283,22 @@ class PokemonCardScraper:
             
             filename = f"{safe_pokemon_name}_{safe_set_code}_{card_info['card_number']}.jpg"
             
+            # Determine the target directory based on organization preference
+            if self.organize_by_set:
+                # Create a safe folder name from set name
+                safe_set_name = re.sub(r'[^\w\s-]', '', card_info['set_name']).replace(' ', '_')
+                safe_set_name = re.sub(r'_+', '_', safe_set_name).strip('_')  # Clean up multiple underscores
+                
+                # Create set-specific folder
+                set_folder = self.download_dir / "images" / f"{safe_set_name}_{safe_set_code}"
+                set_folder.mkdir(exist_ok=True)
+                
+                filepath = set_folder / filename
+            else:
+                # Use the original flat structure
+                filepath = self.download_dir / "images" / filename
+            
             # Handle duplicate filenames
-            filepath = self.download_dir / "images" / filename
             counter = 1
             original_filepath = filepath
             while filepath.exists():
@@ -488,6 +503,8 @@ def main():
                        help="Fast mode: parallel with minimal delay")
     parser.add_argument("--skip-count", action="store_true",
                        help="Skip counting cards (start downloading immediately)")
+    parser.add_argument("--organize-by-set", action="store_true",
+                       help="Organize downloaded images into folders by set name")
     
     args = parser.parse_args()
     
@@ -498,13 +515,14 @@ def main():
         args.workers = 8
         print("🚀 Fast mode enabled: parallel downloading with 8 workers and 0.05s delay")
     
-    scraper = PokemonCardScraper()
+    scraper = PokemonCardScraper(organize_by_set=args.organize_by_set)
     
     print(f"⚙️  Configuration:")
     print(f"   Delay: {args.delay}s between downloads")
     print(f"   Parallel: {'Yes' if args.parallel else 'No'}")
     if args.parallel:
         print(f"   Workers: {args.workers}")
+    print(f"   Organize by set: {'Yes' if args.organize_by_set else 'No'}")
     print()
     
     try:
